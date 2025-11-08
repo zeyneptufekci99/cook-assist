@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
-import { Textarea } from '../ui/textarea';
-import { Button } from '../ui/button';
+
 import type { IIngredientTextArea } from './IngredientTextArea.type';
 import { slugify } from '@/utils/slungify';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 
 export const IngredientsTextArea = ({ onAddToList }: IIngredientTextArea) => {
   const [ingredient, setIngredient] = useState('');

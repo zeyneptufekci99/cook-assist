@@ -1,4 +1,4 @@
-import { Badge } from '../custom/Badge/Badge';
+import { Badge } from '../Badge/Badge';
 import type { IIngredientsContainer } from './IngredientsContainer.type';
 
 const colorClasses = [
@@ -24,7 +24,6 @@ export const IngredientsContainer = ({
     <div className="w-full flex flex-row flex-wrap gap-x-1 gap-y-1 bg-white p-4 shadow-lg rounded-2xl min-h-28 h-fit max-h-96 overflow-y-auto">
       {ingredientList.length > 0 ? (
         <>
-          {' '}
           {ingredientList.map((item, index) => {
             const colorClass = colorClasses[index % colorClasses.length];
             return (
