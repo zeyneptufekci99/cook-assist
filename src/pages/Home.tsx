@@ -91,8 +91,11 @@ export default function Home() {
       // Convert to string
       const ingredientsString = allIngredients.join(', ');
 
+      // Check if user wants a different recipe (button shows "Başka Tarif Öner")
+      const requestDifferent = result !== '';
+
       // Generate recipe
-      const recipe = await generateRecipe(ingredientsString);
+      const recipe = await generateRecipe(ingredientsString, requestDifferent);
       setResult(recipe);
     } catch (err) {
       const errorMessage = 'Tarif oluşturulurken bir hata oluştu.';
