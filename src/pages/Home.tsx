@@ -3,7 +3,7 @@ import {
   IngredientsTextArea,
   type IIngredient,
 } from '@/components/custom';
-import { generateRecipe } from '../services/openai';
+import { generateRecipe } from '../services/groqai';
 
 import { useState } from 'react';
 
@@ -95,10 +95,7 @@ export default function Home() {
       const recipe = await generateRecipe(ingredientsString);
       setResult(recipe);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : 'Tarif oluşturulurken bir hata oluştu.';
+      const errorMessage = 'Tarif oluşturulurken bir hata oluştu.';
       setError(errorMessage);
       console.error('Error generating recipe:', err);
     } finally {
@@ -144,21 +141,25 @@ export default function Home() {
       <button
         onClick={handleGenerate}
         disabled={loading}
-        className="mt-4 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 disabled:opacity-50"
+        className=" bg-orange-500 min-w-48 text-white px-4 py-2 rounded hover:bg-orange-600 disabled:opacity-50"
       >
-        {loading ? 'Hazırlanıyor...' : 'Tarif Öner'}
+        {loading
+          ? 'Hazırlanıyor...'
+          : result
+            ? 'Başka Tarif Öner'
+            : 'Tarif Öner'}
       </button>
 
       {error && (
-        <div className="mt-6 max-w-2xl bg-red-50 border border-red-200 text-red-800 p-4 rounded shadow">
+        <div className=" max-w-2xl bg-red-50 border border-red-200 text-red-800 p-4 rounded shadow">
           <h2 className="font-semibold mb-2">Hata:</h2>
           <p>{error}</p>
         </div>
       )}
 
       {result && (
-        <div className="mt-6 max-w-2xl bg-white p-4 rounded shadow">
-          <h2 className="font-semibold mb-2">Tarif:</h2>
+        <div className="max-w-2xl w-full h-full overflow-y-auto overflow-x-hidden bg-white p-4 rounded shadow">
+          <h2 className="font-semibold mb-2 text-orange-500">Tarif:</h2>
           <p className="whitespace-pre-wrap">{result}</p>
         </div>
       )}
