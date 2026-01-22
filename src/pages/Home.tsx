@@ -1,60 +1,109 @@
 import {
   IngredientsContainer,
   IngredientsTextArea,
-  OtherDrawer,
   type IIngredient,
-  type IOtherDrawerCheckboxItem,
 } from '@/components/custom';
 import { generateRecipe } from '../services/openai';
 
 import { useState } from 'react';
-import { oilList } from '@/data/oilList';
-import { flourList } from '@/data/flourList';
-import { spiceList } from '@/data/spiceList';
 
 export default function Home() {
   const [ingredients, setIngredients] = useState<IIngredient[]>([]);
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
-  const [oil, setOil] = useState<IOtherDrawerCheckboxItem[]>(() => {
-    return oilList.map((item) => {
-      return {
-        id: item.id,
-        label: item.label,
-        checked: false,
-      };
-    });
-  });
-  const [flour, setFlour] = useState<IOtherDrawerCheckboxItem[]>(() => {
-    return flourList.map((item) => {
-      return {
-        id: item.id,
-        label: item.label,
-        checked: false,
-      };
-    });
-  });
-  const [spice, setSpice] = useState<IOtherDrawerCheckboxItem[]>(() => {
-    return spiceList.map((item) => {
-      return {
-        id: item.id,
-        label: item.label,
-        checked: false,
-      };
-    });
-  });
+  // const [oil, setOil] = useState<IOtherDrawerCheckboxItem[]>(() => {
+  //   return oilList.map((item) => {
+  //     return {
+  //       id: item.id,
+  //       label: item.label,
+  //       checked: true,
+  //     };
+  //   });
+  // });
+  // const [flour, setFlour] = useState<IOtherDrawerCheckboxItem[]>(() => {
+  //   return flourList.map((item) => {
+  //     return {
+  //       id: item.id,
+  //       label: item.label,
+  //       checked: true,
+  //     };
+  //   });
+  // });
+  // const [spice, setSpice] = useState<IOtherDrawerCheckboxItem[]>(() => {
+  //   return spiceList.map((item) => {
+  //     return {
+  //       id: item.id,
+  //       label: item.label,
+  //       checked: true,
+  //     };
+  //   });
+  // });
 
-  const [salt, setSalt] = useState(true);
+  // const [salt, setSalt] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const handleGenerate = async () => {
     setLoading(true);
-    // const recipe = await generateRecipe(ingredients);
+    setError(null);
+    setResult('');
 
-    setTimeout(() => {
-      console.log('deneme');
-      setResult('result');
+    try {
+      // Collect all ingredients
+      const allIngredients: string[] = [];
+
+      // Add user-added ingredients
+      ingredients.forEach((ing) => {
+        allIngredients.push(ing.label);
+      });
+
+      // Add selected oils
+      // oil
+      //   .filter((item) => item.checked)
+      //   .forEach((item) => {
+      //     allIngredients.push(item.label);
+      //   });
+
+      // Add selected flours
+      // flour
+      //   .filter((item) => item.checked)
+      //   .forEach((item) => {
+      //     allIngredients.push(item.label);
+      //   });
+
+      // Add selected spices
+      // spice
+      //   .filter((item) => item.checked)
+      //   .forEach((item) => {
+      //     allIngredients.push(item.label);
+      //   });
+
+      // Add salt if checked
+      // if (salt) {
+      //   allIngredients.push('tuz');
+      // }
+
+      if (allIngredients.length === 0) {
+        setError('Lütfen en az bir malzeme ekleyin.');
+        setLoading(false);
+        return;
+      }
+
+      // Convert to string
+      const ingredientsString = allIngredients.join(', ');
+
+      // Generate recipe
+      const recipe = await generateRecipe(ingredientsString);
+      setResult(recipe);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Tarif oluşturulurken bir hata oluştu.';
+      setError(errorMessage);
+      console.error('Error generating recipe:', err);
+    } finally {
       setLoading(false);
-    }, 2000);
-    // setResult(recipe);
+    }
   };
 
   const handleAddToList = (item: IIngredient) => {
@@ -63,7 +112,7 @@ export default function Home() {
 
   const deleteIngredient = (id: string) => {
     setIngredients(
-      ingredients.filter((ingredient: IIngredient) => ingredient.id !== id)
+      ingredients.filter((ingredient: IIngredient) => ingredient.id !== id),
     );
   };
 
@@ -76,8 +125,11 @@ export default function Home() {
         ingredientList={ingredients}
         onClickClose={deleteIngredient}
       />
-      <IngredientsTextArea onAddToList={handleAddToList} />
-      <div className="text-md text-black flex flex-row gap-2">
+      <IngredientsTextArea
+        ingredientList={ingredients}
+        onAddToList={handleAddToList}
+      />
+      {/* <div className="text-md text-black flex flex-row gap-2">
         <OtherDrawer
           oilList={oil}
           flourList={flour}
@@ -88,7 +140,7 @@ export default function Home() {
           onChangeSpiceList={(list) => setSpice(list)}
           onChangeSalt={(value) => setSalt(value)}
         />
-      </div>
+      </div> */}
       <button
         onClick={handleGenerate}
         disabled={loading}
@@ -97,10 +149,17 @@ export default function Home() {
         {loading ? 'Hazırlanıyor...' : 'Tarif Öner'}
       </button>
 
+      {error && (
+        <div className="mt-6 max-w-2xl bg-red-50 border border-red-200 text-red-800 p-4 rounded shadow">
+          <h2 className="font-semibold mb-2">Hata:</h2>
+          <p>{error}</p>
+        </div>
+      )}
+
       {result && (
         <div className="mt-6 max-w-2xl bg-white p-4 rounded shadow">
           <h2 className="font-semibold mb-2">Tarif:</h2>
-          <p>{result}</p>
+          <p className="whitespace-pre-wrap">{result}</p>
         </div>
       )}
     </div>

@@ -1,3 +1,42 @@
+# Cook Assist 🍳
+
+A React + TypeScript + Vite application that helps you generate recipes based on available ingredients using OpenAI.
+
+## Setup
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure OpenAI API Key
+
+1. Get your OpenAI API key from [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+2. Create a `.env` file in the root directory
+3. Add your API key:
+
+```env
+VITE_OPENAI_API_KEY=your_openai_api_key_here
+```
+
+**Important:** Never commit your `.env` file to version control. It should already be in `.gitignore`.
+
+### 3. Run the Development Server
+
+```bash
+npm run dev
+```
+
+## Features
+
+- Add ingredients manually
+- Select oils, flours, spices, and salt preferences
+- Generate creative recipes using OpenAI GPT-4o-mini
+- Beautiful, modern UI with Tailwind CSS
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

@@ -2,4 +2,5 @@ import type { IIngredient } from '../IngredientsContainer/IngredientsContainer.t
 
 export interface IIngredientTextArea {
   onAddToList: (item: IIngredient) => void;
+  ingredientList: IIngredient[];
 }
